@@ -1,77 +1,41 @@
 package ermanAmazon;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-
 public class Solution1 {
 
-	public List<String> getDirectFriendsForUser(String user) {
-
-		return null;
+	public static void main(String[] args) {
+		
+		int [] lockerXCoordinates = new int[2];
+		lockerXCoordinates[0] = 2;
+		lockerXCoordinates[1] = 4;
+		int[] lockerYCoordinates = new int[2];
+		lockerYCoordinates[0] = 3;
+		lockerYCoordinates[1] = 7;
+		
+		int [][] result = getLockerDistanceGrid(5, 7, lockerXCoordinates, lockerYCoordinates);
+		
+		for(int i = 0; i < 7; i++){
+			for(int j = 0; j < 5; j++){
+				System.out.print(result[i][j] + " ");
+			}
+			System.out.println();
+		}
 	}
 
-	public List<String> getAttendedCoursesForUser(String user) {
-
-		return null;
-	}
-
-	public List<String> getRankedCourses(String user) {
-		List<String> recommendations = new LinkedList<String>();
-		
-		List<String> userCourses = getAttendedCoursesForUser(user);
-		if(userCourses == null){
-			userCourses = new ArrayList<String>();
-		}
-		
-		List<String> firstLevelFriends = getDirectFriendsForUser(user);
-		Set<String> socialNetwork = new HashSet<String>();
-		if(firstLevelFriends != null)
-			socialNetwork.addAll(firstLevelFriends);
-		
-		List<String> secondLevelFriends = null;
-		for(int i = 0; i < firstLevelFriends.size(); i++){
-			secondLevelFriends = getDirectFriendsForUser(firstLevelFriends.get(i));
-			if(secondLevelFriends != null)
-			socialNetwork.addAll(secondLevelFriends);
-		}
-		
-		Map<String, Integer> networksCourses = new HashMap<String, Integer>();
-		List<String> attendedCourses = null;
-		for (String userId : socialNetwork) {
-			attendedCourses = getAttendedCoursesForUser(userId);
-			if(attendedCourses != null){
-				for (String courseId : attendedCourses) {
-					if(!userCourses.contains(courseId)){
-						networksCourses.put(courseId, networksCourses.get(courseId) + 1);
+	static int[][] getLockerDistanceGrid(int cityLength, int cityWidth, int[] lockerXCoordinates, int[] lockerYCoordinates){
+		int[][] result = new int[cityWidth][cityLength];
+		for(int i = 1; i <= cityWidth; i++){
+			for(int j = 1; j <= cityLength; j++){
+				int temp = 1000;
+				for(int k = 0; k < lockerXCoordinates.length; k++){
+					if(Math.abs((lockerXCoordinates[k] - j)) + Math.abs((lockerYCoordinates[k] - i)) < temp){
+						temp = Math.abs((lockerXCoordinates[k] - j)) + Math.abs((lockerYCoordinates[k] - i));
 					}
 				}
+				result[i - 1][j - 1] = temp;
 			}
 		}
 		
-		Object[] a = networksCourses.entrySet().toArray();
-		sort(a);
-		
-		for (Object entry : a) {
-			recommendations.add(((Map.Entry<String, Integer>) entry).getKey());
-		}
-		return recommendations;
+		return result;
 	}
-
-	private void sort(Object[] a) {
-		Arrays.sort(a, new Comparator<Object>() {
-		    public int compare(Object o1, Object o2) {
-		        Entry<String, Integer> firstEntry = (Map.Entry<String, Integer>) o2;
-				Entry<String, Integer> secondEntry = (Map.Entry<String, Integer>) o1;
-				return firstEntry.getValue().compareTo(secondEntry.getValue());
-		    }
-		});
-	}
+	
 }
